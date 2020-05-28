@@ -1,7 +1,7 @@
-﻿#XKCD PASSWORD GENERATOR
+#XKCD PASSWORD GENERATOR
 
-#VERSION 1.0
-#LAST MODIFIED: 2019.02.16
+#VERSION 2.0
+#LAST MODIFIED: 2020.05.28
 
 <#
 .SYNOPSIS
@@ -11,22 +11,22 @@
 .DESCRIPTION    
     
     This function uses available dictionary files and the user's input to create a random memorable password.
-    The dictionary files should be placed in C:\Scripts\. It can be used to generate passwords for a variety 
-    of purposes and can also be used in combination with other functions in order to use a single line 
-    password set command. This function can be used without parameters and will generate a password using 4 
-    words between 5 and 15 characters each.
+    The dictionary files should be placed in your PowerShell profile directory in a subfolder. They are used 
+    to generate passwords and can also be used in combination with other functions in order to use a single 
+    line password set command. This function can be used without parameters and will generate a password using
+    2 words between 6 and 16 characters each.
 
 .PARAMETER MinWordLength
    
    This parameter is used to set the minimum individual word length used in the password. The full range is 
    between 1 and 24 characters. Selecting 24 will include all words up to 31 characters (it's not many).
-   Its recommended value is 5. If none is specified, the default value of 5 will be used.
+   Its recommended value is 6, which is also the default.
 
 .PARAMETER MaxWordLength
 
    This parameter is used to set the maximum individual word length used in the password. The full range is 
    between 1 and 24 characters. Selecting 24 will include all words up to 31 characters (it's not many).
-   Its recommended value is 15. If none is specified, the default value of 15 will be used.
+   Its recommended value is 16, which is also the default.
 
 .PARAMETER WordCount
 
@@ -55,7 +55,7 @@
     
 #>    
 function New-SecurePassword 
-    {
+{
     [cmdletBinding()]
     [OutputType([string])]
     
@@ -63,15 +63,19 @@ function New-SecurePassword
     ( 
         [ValidateRange(1,24)]
         [int]
-        $MinWordLength = 5,
+        $MinWordLength = 6,
         
         [ValidateRange(1,24)]        
         [int]
-        $MaxWordLength = 15,
+        $MaxWordLength = 12,
         
         [ValidateRange(1,24)]        
         [int]
-        $WordCount = 4, 
+        $WordCount = 2,
+        
+        [ValidateRange(1,24)]        
+        [int]
+        $Count = 1,
         
         [int]$MaxLength = 65535, 
         
@@ -81,7 +85,41 @@ function New-SecurePassword
 
     )
         
-                
+    #VALIDATE DICTIONARY FILE PRESENCE
+    $FileLengths = 1..24
+    $LocalPath = (([environment]::getfolderpath("mydocuments") + '\WindowsPowerShell\XKCD-Password-Generator\'))
+    $GitHubPath = 'https://raw.githubusercontent.com/garrett-wood/Public/master/XKCD%20Password%20Generatror/Words_'
+
+    $TestFolder = Test-Path $LocalPath
+    If ($TestFolder -eq $True)
+        {
+        ForEach ($File in $FileLengths)
+            {
+            $TestResult = Test-Path ($LocalPath + "Words_" + $File + ".txt")
+            If ($TestResult -eq $False)
+                {
+                Write-Warning "Missing Dictionary File Words_$file.txt. Downloading."
+                Invoke-WebRequest -Uri ($GitHubPath + "$File.txt") -OutFile ($LocalPath + "Words_" + "$File.txt")
+	            }
+            }
+        }
+    Else 
+        {
+        Write-Warning "Directory Missing. Creating and downloading dictionary files."
+        New-Item -Type Directory -Path $LocalPath
+        ForEach ($File in $FileLengths)
+            {
+            Invoke-WebRequest -Uri ($GitHubPath + "$File.txt") -OutFile ($LocalPath + "Words_" + "$File.txt")
+            }
+        }            
+
+
+    #GENERATE RANDOM PASSWORD(S)
+    $FinalPasswords = @()
+    For( $Passwords=1; $Passwords -le $Count; $Passwords++ )
+    {
+    
+
         #GENERATE RANDOM LENGTHS FOR EACH WORD
         $WordLengths =  @()
         For( $Words=1; $Words -le $WordCount; $Words++ ) 
@@ -100,7 +138,7 @@ function New-SecurePassword
         $RandomWords = @()
         ForEach ($WordLength in $WordLengths)
             {
-            $DictionaryPath = ('C:\Scripts\Words_' + $WordLength + '.txt')
+            $DictionaryPath = ($LocalPath + 'Words_' + $WordLength + '.txt')
             $Dictionary = Get-Content -Path $DictionaryPath
             $MaxWordIndex = Get-Content -Path $DictionaryPath | Measure-Object -Line | Select -Expand Lines
             $RandomBytes = New-Object -TypeName 'System.Byte[]' 4
@@ -178,8 +216,12 @@ function New-SecurePassword
             {
             $FinalPassword = $FinalPasswordString
             }
-    
+
+        #JOIN GENERATED PASSWORDS TO ARRAY
+        $FinalPasswords += $FinalPassword
+
+    }
 
     #PROVIDE RANDOM PASSWORD  
-    Return $FinalPassword
+    Return $FinalPasswords
 }
