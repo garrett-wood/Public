@@ -1149,7 +1149,6 @@ cobb
 cobs
 coca
 coch
-cock
 coco
 coct
 coda
@@ -1978,7 +1977,6 @@ fado
 fads
 faff
 fage
-fags
 fail
 fain
 fair
@@ -2283,7 +2281,6 @@ gaia
 gail
 gain
 gair
-gays
 gait
 gala
 gale
@@ -5003,7 +5000,6 @@ pise
 pish
 pisk
 piso
-piss
 pist
 pita
 pith
@@ -6416,7 +6412,6 @@ tyrr
 tite
 titi
 tyto
-tits
 tyum
 tivy
 tiza
