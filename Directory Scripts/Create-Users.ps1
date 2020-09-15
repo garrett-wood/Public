@@ -7,8 +7,8 @@ The fields should be named or this will not work properly as is the case for eve
 
 for example:
 
-"Tony","Stark","Tony Stark","tstark@contoso.com","P@$$W0rd","Iron Man","Valencia","CA","Avengers","5555555555"
- 
+Givenname,Surname,DisplayName,AltDisplayName,Title,Migration,Department,Company,StreetAddress,City,State,ZipCode,Country,Phone,Mobile,Fax,UserPrincipalName,Password,UPNSuffix,SamAccountName,ManagerAltDisplayName,ManagerSamAccountName
+
  It is not recommended to hard-set a password, instead a randomly generated password should be created for each user and 
  either emailed directly to them or otherwise communicated in a secure manner. Should you wish to ignore this advice,
  simply replace line 55 below with "-AccountPassword ( "YourPasswordHere" | ConvertTo-SecureString -AsPlainText -Force) `"
