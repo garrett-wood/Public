@@ -14,7 +14,6 @@ abey
 abel
 abet
 abib
-abie
 abye
 abir
 abys
@@ -299,7 +298,6 @@ ante
 anti
 ants
 antu
-anus
 aoli
 aoul
 apay
@@ -1001,7 +999,6 @@ cava
 cave
 cavy
 cavu
-cawk
 cawl
 caws
 caza
@@ -1123,7 +1120,6 @@ clew
 clin
 clio
 clip
-clit
 cliv
 clod
 clof
@@ -1209,7 +1205,6 @@ coof
 cook
 cool
 coom
-coon
 coop
 coos
 coot
@@ -1260,7 +1255,6 @@ crag
 cray
 cram
 cran
-crap
 craw
 crax
 crea
@@ -1508,7 +1502,6 @@ dibs
 dice
 dyce
 dich
-dick
 dict
 didy
 didn
@@ -1527,7 +1520,6 @@ diff
 digs
 dika
 dike
-dyke
 dill
 dilo
 dime
@@ -2006,7 +1998,6 @@ fare
 farl
 farm
 faro
-fart
 fasc
 fash
 fass
@@ -2510,9 +2501,7 @@ gonk
 good
 goof
 goog
-gook
 gool
-goon
 goop
 goos
 gora
@@ -3516,7 +3505,6 @@ kiev
 kifs
 kiho
 kiyi
-kike
 kyke
 kiki
 kiku
@@ -4425,7 +4413,6 @@ navi
 navy
 nawt
 naze
-nazi
 neaf
 neal
 neap
@@ -5074,7 +5061,6 @@ pooh
 pook
 pool
 poon
-poop
 poor
 poot
 pope
@@ -5083,7 +5069,6 @@ porc
 pore
 pory
 pork
-porn
 porr
 port
 pose
@@ -5170,7 +5155,6 @@ puka
 puke
 puky
 puku
-pule
 puli
 puly
 pulk
@@ -5720,8 +5704,6 @@ sett
 seve
 sewn
 sews
-sexy
-sext
 sgad
 shab
 shad
@@ -5847,7 +5829,6 @@ siva
 size
 sizy
 sizz
-skag
 skal
 skat
 skaw
@@ -5913,14 +5894,12 @@ slug
 slum
 slup
 slur
-slut
 smee
 smew
 smit
 smog
 smug
 smur
-smut
 snab
 snag
 snap
@@ -6030,7 +6009,6 @@ sped
 spet
 spew
 spex
-spic
 spif
 spig
 spik
@@ -6577,7 +6555,6 @@ tunu
 tupi
 tups
 turb
-turd
 turf
 turi
 turk
@@ -6598,7 +6575,6 @@ twae
 tway
 twal
 twas
-twat
 twee
 twie
 twig
@@ -6872,7 +6848,6 @@ wand
 wane
 wang
 wany
-wank
 wans
 want
 wapp
