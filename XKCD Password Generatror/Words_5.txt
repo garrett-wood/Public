@@ -9543,7 +9543,6 @@ nawle
 nawob
 nazim
 nazir
-nazis
 neaps
 nears
 neath
@@ -10445,7 +10444,6 @@ pendn
 pends
 penes
 pengo
-penis
 penna
 penni
 penny
@@ -10476,7 +10474,6 @@ perla
 perle
 perms
 perry
-perse
 perty
 perun
 pesah
@@ -10778,7 +10775,6 @@ podos
 poems
 poesy
 poets
-pogey
 pogge
 poggy
 pohna
@@ -11113,7 +11109,6 @@ pursy
 purty
 puses
 pushy
-pussy
 putid
 puton
 putti
@@ -11157,7 +11152,6 @@ queak
 queal
 quean
 queen
-queer
 queet
 quegh
 queys
@@ -12290,7 +12284,6 @@ sells
 selva
 semee
 semel
-semen
 semes
 semic
 semih
@@ -12485,8 +12478,6 @@ shirt
 shish
 shisn
 shist
-shita
-shits
 shiva
 shive
 shivy
@@ -12682,7 +12673,6 @@ sisal
 sisel
 sises
 sysin
-sissy
 sissu
 sitao
 sitar
@@ -14332,7 +14322,6 @@ toona
 toons
 toosh
 tooth
-toots
 topas
 topau
 topaz
@@ -14427,7 +14416,6 @@ trays
 trait
 trama
 trame
-tramp
 trams
 trank
 trans
@@ -14665,7 +14653,6 @@ twill
 twilt
 twine
 twiny
-twink
 twins
 twint
 twire
@@ -15293,7 +15280,6 @@ vuggy
 vuggs
 vughs
 vulgo
-vulva
 waapa
 waasi
 wabby
