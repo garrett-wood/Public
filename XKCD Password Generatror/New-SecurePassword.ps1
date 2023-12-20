@@ -1,227 +1,370 @@
 #XKCD PASSWORD GENERATOR
 
-#VERSION 2.0
-#LAST MODIFIED: 2020.05.28
+#Load example dictionary file at import
+. $PSScriptRoot\dictionary.ps1
 
 <#
 .SYNOPSIS
-    This function creates random passwords using user defined characteristics. It is inspired by the XKCD 936
-    comic and the password generator spawned from it, XKPasswd.
+This function creates random passwords using user defined characteristics. It is inspired by the XKCD 936 comic and the password generator spawned from it, XKPasswd.
 
-.DESCRIPTION    
-    
-    This function uses available dictionary files and the user's input to create a random memorable password.
-    The dictionary files should be placed in your PowerShell profile directory in a subfolder. They are used 
-    to generate passwords and can also be used in combination with other functions in order to use a single 
-    line password set command. This function can be used without parameters and will generate a password using
-    2 words between 6 and 16 characters each.
-
-.PARAMETER MinWordLength
-   
-   This parameter is used to set the minimum individual word length used in the password. The full range is 
-   between 1 and 24 characters. Selecting 24 will include all words up to 31 characters (it's not many).
-   Its recommended value is 6, which is also the default.
-
-.PARAMETER MaxWordLength
-
-   This parameter is used to set the maximum individual word length used in the password. The full range is 
-   between 1 and 24 characters. Selecting 24 will include all words up to 31 characters (it's not many).
-   Its recommended value is 16, which is also the default.
+.DESCRIPTION
+This function uses a dictionary array and the user's input to create a random memorable password. The included example dictionary can be found in the above dot sourced file, and should be named $ExampleDictionary. It can be used to generate passwords for a variety of purposes and can also be used in combination with other functions in order to use a single line password set command. This function can be used without parameters and will generate a password using 3 words between 4 and 8 characters each.
 
 .PARAMETER WordCount
+This parameter is used to set the number of words in the password generated. The full range is between 1 and 24 words. Caution is advised at any count higher than 10
 
-   This parameter is used to set the number of words in the password generated. The full range is between 1
-   and 24 words. Caution is advised at any count higher than 10
+.PARAMETER MinWordLength
+This parameter is used to set the minimum individual word length used in the password. The full range is between 1 and 24 characters. Selecting 24 will include all words up to 31 characters (it's not many). Its recommended value is 4. If none is specified, the default value of 4 will be used.
 
-.PARAMETER MaxLength
+.PARAMETER MaxWordLength
+This parameter is used to set the maximum individual word length used in the password. The full range is between 1 and 24 characters. Selecting 24 will include all words up to 31 characters (it's not many). Its recommended value is 8. If none is specified, the default value of 8 will be used.
 
-   This parameter overrides the full length of the password by cutting it off after the number of characters
-   specified. Its only recommended use is where password length is determined by maximums for an application.
+.PARAMETER Transformations
+This parameter is used to select how the words should be transformed. It will only accept the following options:
 
-.PARAMETER NoSymbols
+- None = Apply no changes to the words, use them exactly as listed in the dictionary array
+- alternatingWORDcase = Capitalize every even word
+- CapitaliseFirstLetter = Capitalize the first letter of each word
+- cAPITALIZEeVERYlETTERbUTfIRST = Capitalize every letter except for the first letter in each word
+- lowercase = Force all the words to lowercase
+- UPPERCASE = Force all the words to uppercase
+- RandomCapitalise = Randomly capitalize each word or not
 
-   This parameter prevents any symbols from being used in the password. Its only recommended use is where
-   symbols are disallowed by the application.
+.PARAMETER Separator
+This parameter is used to set an array of symbols to be used as a separator between sections and words. Set to an empty value or $null to not have a separator, or set to just one character to force a particular character.
 
-.PARAMETER NoNumbers
+This is the default separator alphabet:
 
-   This parameter prevents any numbers from being used in the password. Its only recommended use is where
-   numbers are disallowed by the application.
+! @ $ % ^ & * - _ + = : | ~ ? / . ;
 
-.RELATED LINKS
-    
-    XKCD Comic 936: https://xkcd.com/936/
-    XKPasswd:       https://xkpasswd.net/
-    
-#>    
-function New-SecurePassword 
-{
+.PARAMETER FrontPaddingDigits
+This parameter is used to set how many digits are added to the beginning of the password. Set to 0 to not have any padding digits.
+
+.PARAMETER EndPaddingDigits
+This parameter is used to set how many digits are added to the end of the password. Set to 0 to not have any padding digits.
+
+.PARAMETER FrontPaddingSymbols
+This parameter is used to set how many symbols are added to the beginning of the password. Set to 0 to not have any padding symbols.
+
+.PARAMETER EndPaddingSymbols
+This parameter is used to set how many symbols are added to the end of the password. Set to 0 to not have any padding symbols.
+
+.PARAMETER PaddingSymbols
+This parameter is used to set an array of symbols to be used to pad the beggining and end of the password. Set to an empty value or $null to not have any padding, or set to just one character to force a particular character.
+
+This is the default padding alphabet:
+
+! @ $ % ^ & * - _ + = : | ~ ? / . ;
+
+.PARAMETER Dictionary
+This parameter is used to define an array of strings that will be used to select the words in the password. It defaults to the $ExampleDictionary array from the dot sourced Dictionary.ps1 file
+
+.EXAMPLE
+New-SecurePassword
+
+&&63&mohel&coopers&hibbin&65&&
+
+Just running the command will generate a password with the default settings.
+
+.EXAMPLE
+New-SecurePassword -WordCount 3 -MinWordLength 4 -MaxWordLength 4 -Transformations RandomCapitalise -Separator @("-","+","=",".","*","_","|","~",",") -FrontPaddingDigits 0 -EndPaddingDigits 0 -FrontPaddingSymbols 1 -EndPaddingSymbols 1 -Verbose
+
+VERBOSE: Dictionary contains 370222 words.
+VERBOSE: 7197 potential words selected.
+VERBOSE: Structure: [P][Word][S][Word][S][Word][P]
+VERBOSE: Length: always 16 characters
+.nies-haen-than.
+
+This example will generate a password using the WEB16 settings from xkpasswd.net with verbosity enabled.
+
+.NOTES
+RELATED LINKS
+XKCD Comic 936: https://xkcd.com/936/
+XKPasswd:       https://xkpasswd.net/
+Original:       https://github.com/garrett-wood/Public/blob/master/XKCD%20Password%20Generatror/New-SecurePassword.ps1
+
+CHANGELOG
+- VERSION 1.0 - LAST MODIFIED: 2019.02.16
+  - Original version from https://www.reddit.com/r/PowerShell/comments/arccbg/update_xkcd_password_generator/
+- VERSION 2.0 - LAST MODIFIED: 2023-12-20
+  - Expands the script to have more flexibility and more closely match the version found on XKPASSWD, but implimented entirely in PowerShell
+#>
+function New-SecurePassword {
     [cmdletBinding()]
     [OutputType([string])]
     
-    Param
-    ( 
+    Param( 
+        # The number of words to include
         [ValidateRange(1,24)]
-        [int]
-        $MinWordLength = 6,
-        
-        [ValidateRange(1,24)]        
-        [int]
-        $MaxWordLength = 12,
-        
-        [ValidateRange(1,24)]        
-        [int]
-        $WordCount = 2,
-        
-        [ValidateRange(1,24)]        
-        [int]
-        $Count = 1,
-        
-        [int]$MaxLength = 65535, 
-        
-        [switch]$NoSymbols = $False, 
-        
-        [switch]$NoNumbers = $False 
+        [int]$WordCount = 3, 
 
+        # The minimum length of words to consider
+        [ValidateRange(1,24)]
+        [int]$MinWordLength = 4,
+
+        # the maximum length of words to consider
+        [ValidateRange(1,24)]
+        [int]$MaxWordLength = 8,
+
+        # How to transform the words
+        [ValidateSet("None","alternatingWORDcase","CapitaliseFirstLetter","cAPITALIZEeVERYlETTERbUTfIRST","lowercase","UPPERCASE","RandomCapitalise")]
+        [String]$Transformations = "AlternatingWordCase",
+
+        # Separator character randomly chosen from this set
+        [char[]]$Separator = @("!","@","$","%","^","&","*","-","_","+","=",":","|","~","?","/",".",";"),
+
+        # Padding digits at the front of the password
+        [int]$FrontPaddingDigits = 2, 
+
+        # Padding digits at the end of the password
+        [int]$EndPaddingDigits = 2, 
+
+        # Padding symbols at the front of the password
+        [int]$FrontPaddingSymbols = 2, 
+
+        # Padding symbols at the end of the password
+        [int]$EndPaddingSymbols = 2, 
+
+        # Padding character randomly chosen from this set
+        [char[]]$PaddingSymbols = @("!","@","$","%","^","&","*","-","_","+","=",":","|","~","?","/",".",";"),
+
+        # An array of strings to use as the dictionary
+        [string[]]$Dictionary = $ExampleDictionary
     )
-        
-    #VALIDATE DICTIONARY FILE PRESENCE
-    $FileLengths = 1..24
-    $LocalPath = (([environment]::getfolderpath("mydocuments") + '\WindowsPowerShell\XKCD-Password-Generator\'))
-    $GitHubPath = 'https://raw.githubusercontent.com/garrett-wood/Public/master/XKCD%20Password%20Generatror/Words_'
+    
+    begin {
+        # DEFINE VARIABLES
+        [String]$PWStructure = ""
+        [Int]$MinLength = 0
+        [Int]$MaxLength = 0
+        [string]$SecurePassword = ""
+    }
+    
+    process {
+        <#
+        (Verbose) Display password structure and length
+        1. Select padding symbols
+        2. Select padding numbers
+        3. Select separator
+        4. Select random words
+          filter dictionary to just words in word length
+          get random number in array length
+          Use random number to get array entry
+        5. Select padding numbers
+        6. Select padding symbols
+        #>
 
-    $TestFolder = Test-Path $LocalPath
-    If ($TestFolder -eq $True)
-        {
-        ForEach ($File in $FileLengths)
-            {
-            $TestResult = Test-Path ($LocalPath + "Words_" + $File + ".txt")
-            If ($TestResult -eq $False)
-                {
-                Write-Warning "Missing Dictionary File Words_$file.txt. Downloading."
-                Invoke-WebRequest -Uri ($GitHubPath + "$File.txt") -OutFile ($LocalPath + "Words_" + "$File.txt")
-	            }
+        if ($MinWordLength -le $MaxWordLength) {
+            if (($MinWordLength -lt 24) -and $MaxWordLength -lt 24){
+                [string[]]$FilteredDictionary = $Dictionary | Where-Object {($_.Length -ge $MinWordLength) -and ($_.Length -le $MaxWordLength)}
+            } elseif (($MinWordLength -eq 24) -or ($MaxWordLength -eq 24)) {
+                [string[]]$FilteredDictionary = $Dictionary | Where-Object {$_.Length -ge $MinWordLength}
+            }
+        } else {
+            Write-Warning "Minimum word length is greater than maximum word length."
+            return
+        }
+
+        Write-Verbose "Dictionary contains $($Dictionary.Count) words."
+        Write-Verbose "$($FilteredDictionary.Count) potential words selected."
+
+        # If verbosity is enabled, generate the password structure then write it out
+        if ($PSCmdlet.MyInvocation.BoundParameters["Verbose"].IsPresent) {
+            if ($FrontPaddingSymbols) {
+                For( $C=1; $C -le $FrontPaddingSymbols; $C++ ) {
+                    $PWStructure += '[P]'
+                    $MinLength++
+                }
+            }
+            if ($FrontPaddingDigits) {
+                For( $C=1; $C -le $FrontPaddingDigits; $C++ ) {
+                    $PWStructure += '[D]'
+                    $MinLength++
+                }
+            }
+            if ($Separator -and $FrontPaddingDigits) {
+                $PWStructure += '[S]'
+                $MinLength++
+            }
+            For( $C=1; $C -le $WordCount; $C++ ) {
+                $PWStructure += '[Word]'
+                $MinLength += $MinWordLength
+                $MaxLength += $MaxWordLength - $MinWordLength
+                if ($Separator -and $C -lt $WordCount) {
+                    $PWStructure += '[S]'
+                    $MinLength++
+                }
+            }
+            if ($Separator -and ($EndPaddingDigits)) {
+                $PWStructure += '[S]'
+                $MinLength++
+            }
+            if ($EndPaddingDigits) {
+                For( $C=1; $C -le $EndPaddingDigits; $C++ ) {
+                    $PWStructure += '[D]'
+                    $MinLength++
+                }
+            }
+            if ($EndPaddingSymbols) {
+                For( $C=1; $C -le $EndPaddingSymbols; $C++ ) {
+                    $PWStructure += '[P]'
+                    $MinLength++
+                }
+            }
+            $MaxLength += $MinLength
+            $VerboseMessage = "Structure: $($PWStructure)"
+            Write-Verbose $VerboseMessage
+            $VerboseMessage = "Length: "
+            if ($MinLength -eq $MaxLength) {
+                $VerboseMessage += "always $($MinLength) characters"
+            } else {
+                $VerboseMessage += "between $($MinLength) and $($MaxLength) characters"
+            }
+            Write-Verbose $VerboseMessage
+        }
+
+        # Select a random padding symbol from the provided array
+        if ($PaddingSymbols) {
+            $PadSymbol = $PaddingSymbols[(Get-RandomInt -Min 0 -Max ($PaddingSymbols.Count - 1))]
+        }
+        
+        # Select a random separator character from the provided array
+        if ($Separator) {
+            $SeparatorChar = $Separator[(Get-RandomInt -Min 0 -Max ($Separator.Count - 1))]
+        }
+
+        # Add padding symbols to the beginning of the password, if included
+        if ($FrontPaddingSymbols) {
+            For( $C=1; $C -le $FrontPaddingSymbols; $C++ ) {
+                $SecurePassword += $PadSymbol
             }
         }
-    Else 
-        {
-        Write-Warning "Directory Missing. Creating and downloading dictionary files."
-        New-Item -Type Directory -Path $LocalPath
-        ForEach ($File in $FileLengths)
-            {
-            Invoke-WebRequest -Uri ($GitHubPath + "$File.txt") -OutFile ($LocalPath + "Words_" + "$File.txt")
+        # Add padding digits to the beginning of the password, if included
+        if ($FrontPaddingDigits) {
+            For( $C=1; $C -le $FrontPaddingDigits; $C++ ) {
+                $SecurePassword += Get-RandomInt -Min 0 -Max 9
             }
-        }            
+        }
 
+        # Place a separator between the above and the first word, if included
+        if ($Separator -and $FrontPaddingDigits) {
+            $SecurePassword += $SeparatorChar
+        }
 
-    #GENERATE RANDOM PASSWORD(S)
-    $FinalPasswords = @()
-    For( $Passwords=1; $Passwords -le $Count; $Passwords++ )
-    {
-    
-
-        #GENERATE RANDOM LENGTHS FOR EACH WORD
-        $WordLengths =  @()
-        For( $Words=1; $Words -le $WordCount; $Words++ ) 
-            {
-            [System.Security.Cryptography.RNGCryptoServiceProvider]  $Random = New-Object System.Security.Cryptography.RNGCryptoServiceProvider
-            $RandomNumber = new-object byte[] 1
-            $WordLength = ($Random.GetBytes($RandomNumber))
-            [int] $WordLength = $MinWordLength + $RandomNumber[0] % 
-            ($MaxWordLength - $MinWordLength + 1) 
-            $WordLengths += $WordLength 
-            }
-                
-                
-        
-        #PICK WORD FROM DICTIONARY MATCHING RANDOM LENGTHS
-        $RandomWords = @()
-        ForEach ($WordLength in $WordLengths)
-            {
-            $DictionaryPath = ($LocalPath + 'Words_' + $WordLength + '.txt')
-            $Dictionary = Get-Content -Path $DictionaryPath
-            $MaxWordIndex = Get-Content -Path $DictionaryPath | Measure-Object -Line | Select -Expand Lines
-            $RandomBytes = New-Object -TypeName 'System.Byte[]' 4
-            $Random = New-Object -TypeName 'System.Security.Cryptography.RNGCryptoServiceProvider'
-            #I don't know why but when the below line is commented out, the function breaks and returns the same words each time.
-            $RandomSeed = $Random.GetBytes($RandomBytes)
-            $RNG = [BitConverter]::ToUInt32($RandomBytes, 0)
-            $WordIndex = ($Random.GetBytes($RandomBytes))
-            [int] $WordIndex = 0 + $RNG[0] % 
-            ($MaxWordIndex - 0 + 1)
-            $RandomWord = $Dictionary | Select -Index $WordIndex
-            $RandomWords += $RandomWord
-            }
-
-   
-        #RANDOMIZE CASE
-        $RandomCaseWords = ForEach ($RandomWord in $RandomWords) 
-            {
-            $ChangeCase = Get-Random -InputObject $True,$False
-            If ($ChangeCase -eq $True) 
-                {
-                $RandomWord.ToUpper()
+        # Add the words to the password, using the selected transformation, separated by the separator characters, if applicable
+        For( $C=1; $C -le $WordCount; $C++ ) {
+            $CurrentWord = $FilteredDictionary[(Get-RandomInt -Min 0 -Max ($FilteredDictionary.Count - 1))]
+            If ($Transformations = "None") {
+                $SecurePassword += $CurrentWord
+            } elseif ($Transformations = "alternatingWORDcase") {
+                if ([bool]!($C % 2)) {
+                    $SecurePassword += $CurrentWord.ToUpper()
+                } else {
+                    $SecurePassword += $CurrentWord.ToLower()
                 }
-            Else 
-                {
-                $RandomWord
+            } elseif ($Transformations = "CapitaliseFirstLetter") {
+                $SecurePassword += $CurrentWord.Substring(0,1).ToUpper() + $CurrentWord.Substring(1).ToLower()
+            } elseif ($Transformations = "cAPITALIZEeVERYlETTERbUTfIRST") {
+                $SecurePassword += $CurrentWord.Substring(0,1).ToLower() + $CurrentWord.Substring(1).ToUpper()
+            } elseif ($Transformations = "lowercase") {
+                $SecurePassword += $CurrentWord.ToLower()
+            } elseif ($Transformations = "UPPERCASE") {
+                $SecurePassword += $CurrentWord.ToUpper()
+            } elseif ($Transformations = "RandomCapitalise") {
+                if ((Get-RandomInt -Min 0) % 2) {
+                    $SecurePassword += $CurrentWord.ToUpper()
+                } else {
+                    $SecurePassword += $CurrentWord.ToLower()
                 }
             }
-    
-
-        #ADD SYMBOLS
-        If ($NoSymbols -eq $True) 
-            {
-            $RandomSymbolWords = $RandomCaseWords
+            if ($Separator -and $C -lt $WordCount) {
+                $SecurePassword += $SeparatorChar
             }
-        Else 
-            {
-            $RandomSymbolWords = ForEach ($RandomCaseWord in $RandomCaseWords) 
-                {
-                $Symbols = @('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+')
-                $Prepend = Get-Random -InputObject $Symbols
-                $Append = Get-Random -InputObject $Symbols
-                [System.String]::Concat($Prepend, $RandomCaseWord, $Append)
-                }
+        }
+
+        # Place a separator between the words and the end padding digits/symbols, if applicable
+        if ($Separator -and $EndPaddingDigits) {
+            $SecurePassword += $SeparatorChar
+        }
+
+        # Add padding digits to the end of the password, if included
+        if ($EndPaddingDigits) {
+            For( $C=1; $C -le $EndPaddingDigits; $C++ ) {
+                $SecurePassword += Get-RandomInt -Min 0 -Max 9
             }
-    
-    
-        #ADD NUMBERS
-        If ($NoNumbers -eq $True) 
-            {
-            $NumberedPassword = $RandomSymbolWords
+        }
+
+        # Add padding symbols to the end  of the password, if included
+        if ($EndPaddingSymbols) {
+            For( $C=1; $C -le $EndPaddingSymbols; $C++ ) {
+                $SecurePassword += $PadSymbol
             }
-        Else 
-            {
-            $NumberedPassword = ForEach ($RandomSymbolWord in $RandomSymbolWords) 
-                {
-                $Numbers = @("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
-                $Prepend = Get-Random -InputObject $Numbers
-                $Append = Get-Random -InputObject $Numbers
-                [System.String]::Concat($Prepend, $RandomSymbolWord, $Append)
-                }
-            }
-
-
-        #JOIN ALL ITEMS IN ARRAY
-        $FinalPasswordString = $NumberedPassword -Join ''
-
-
-        #PERFORM FINAL LENGTH CHECK
-        If ($FinalPasswordString.Length -gt $MaxLength) 
-            {
-            $FinalPassword = $FinalPasswordString.substring(0, $MaxLength)
-            }
-        Else 
-            {
-            $FinalPassword = $FinalPasswordString
-            }
-
-        #JOIN GENERATED PASSWORDS TO ARRAY
-        $FinalPasswords += $FinalPassword
-
+        }
     }
 
-    #PROVIDE RANDOM PASSWORD  
-    Return $FinalPasswords
+    end {
+        # Return the generated password
+        Return $SecurePassword
+    }
+}
+
+<#
+.SYNOPSIS
+This function will return a random number.
+
+.DESCRIPTION
+This function takes two numbers and returns a random number between those two numbers. It defaults to the minimum and maximum possible value for an integer, which is a range of 4,294,967,295
+
+.PARAMETER Min
+The minimum number to consider. Defaults to the minimum value for an integer (-2147483648)
+
+.PARAMETER Max
+The maximum number to consider. Defaults to the maximum value for an integer (2147483647)
+
+.EXAMPLE
+Get-RandomInt -Min 0 -Max 100
+
+81
+
+This example generates a random number between 0 and 100
+
+.EXAMPLE
+Get-RandomInt -Min 0
+
+1461304439
+
+This example generates a random number between 0 and [Int]::MaxValue
+
+.EXAMPLE
+Get-RandomInt
+
+-1728936647
+
+This example generates a random number between [Int]::minValue and [Int]::MaxValue
+
+.NOTES
+General notes
+#>
+function Get-RandomInt {
+    [CmdletBinding()]
+    param (
+        # The lowest number to include. Defaults to the lowest possible number
+        [Parameter()][int]$Min = [Int]::MinValue,
+        
+        # the highest number to include
+        [Parameter()][int]$Max = [Int]::MaxValue
+    )
+    
+    process {
+        if ($Min -lt $Max) {
+            $Return = [System.Security.Cryptography.RandomNumberGenerator]::GetInt32($Min,$Max)
+        } else {
+            Write-Warning 'Minimum length must be less than Maximum length'
+            return -1
+        }
+    }
+    
+    end {
+        return $Return
+    }
 }
